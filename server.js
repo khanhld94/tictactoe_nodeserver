@@ -32,4 +32,4 @@ socket.on('disconnect', () => {
 })
 })
 
-server.listen(port, () => console.log(`Listening on port ${port}`))
+server.listen(process.env.PORT || port, () => console.log(`Listening on port ${port}`))
