@@ -18,18 +18,20 @@ const io = socketIO(server)
 io.on('connection', socket => {
     console.log('New client connected')
 
+socket.on('room', function (room) {
+    socket.join(room)
+    console.log('New client connected to room ' + room)
+    socket.on('sendData', (data) => {
+        io.sockets.in(room).emit('sendData', data)
+})
+
+    // disconnect is fired when a client leaves the server
+    socket.on('disconnect', () => {
+        console.log('user disconnected')
+})
+})
 // just like on the client side, we have a socket.on method that takes a callback function
-socket.on('sendData', (data) => {
-    // once we get a 'change color' event from one of our clients, we will send it to the rest of the clients
-    // we make use of the socket.emit method again with the argument given to use from the callback function above
-    console.log('Matrix: ', data.init_matrix)
-io.sockets.emit('sendData', data)
+
 })
 
-// disconnect is fired when a client leaves the server
-socket.on('disconnect', () => {
-    console.log('user disconnected')
-})
-})
-
-server.listen(process.env.PORT || port, () => console.log(`Listening on port ${port}`))
+server.listen(port, () => console.log(`Listening on port ${port}`))
